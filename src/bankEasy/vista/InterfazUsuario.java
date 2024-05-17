@@ -97,7 +97,6 @@ public class InterfazUsuario {
 		} else {
 			inicioSesionRegistro();
 		}
-
 	}
 
 	private void solicitarDatosRegistro() {
