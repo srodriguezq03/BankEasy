@@ -2,5 +2,5 @@ package bankEasy.modelo;
 
 public enum TipoCuentaBancaria {
 	
-	CORRIENTE, AHORRO;
+	AHORRO, CORRIENTE, INVERSION
 }

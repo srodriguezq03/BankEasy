@@ -82,9 +82,12 @@ public class Usuario {
 		this.tipoCuentaUsuario = tipoCuentaUsuario;
 	}
 	
-	public void anyadirCuenta(String nombreDuenyo, String numeroCuenta, double saldo, TipoCuentaBancaria tipoCuentaBancaria) {
-		Cuenta cuenta = new Cuenta(nombreDuenyo, numeroCuenta, saldo, tipoCuentaBancaria);
+	public void anyadirCuenta(Cuenta cuenta) {
 		cuentas.add(cuenta);
+	}
+	
+	public void eliminarCuenta(Cuenta cuenta) {
+		cuentas.remove(cuenta);
 	}
 		
 	public void administraCuenta() {

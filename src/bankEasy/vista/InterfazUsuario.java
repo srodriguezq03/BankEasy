@@ -5,100 +5,188 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import bankEasy.controlador.GestionCuentas;
 import bankEasy.controlador.SistemaAutenticacionUsuario;
+import bankEasy.modelo.Cuenta;
+import bankEasy.modelo.TipoCuentaBancaria;
 import bankEasy.modelo.Usuario;
 
 public class InterfazUsuario {
 
 	ArrayList<Usuario> usuarios = new ArrayList<>();
+	ArrayList<Cuenta> cuentas = new ArrayList<>();
 	BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 	SistemaAutenticacionUsuario sau = new SistemaAutenticacionUsuario();
+	GestionCuentas gc = new GestionCuentas();
 
+	/**
+	 * Método principal que inicia el proceso de la interfaz de usuario.
+	 */
 	public void start() {
 		inicioSesionRegistro();
 	}
 
+	/**
+	 * Muestra el menú principal para iniciar sesión, registrarse o salir de la
+	 * aplicación.
+	 */
 	public void inicioSesionRegistro() {
+		String opcion = null;
+		do {
+			do {
+				System.out.println("\nMenú principal:\n" + "1. Iniciar sesión\n" + "2. Registrarse\n"
+						+ "3. Salir de la aplicación");
+				opcion = introducirInput("Elija una opción:\n> ");
+
+				if (!opcion.equals("1") && !opcion.equals("2") && !opcion.equals("3")) {
+					System.out.println("ERROR: debe introducir una opción del 1 al 3.");
+				}
+			} while (!opcion.equals("1") && !opcion.equals("2") && !opcion.equals("3"));
+
+			switch (opcion) {
+			case "1":
+				solicitarDatosInicioSesion();
+				break;
+			case "2":
+				solicitarDatosRegistro();
+				break;
+			}
+		} while (!opcion.equals("3"));
+		
+		System.out.println("\nSaliendo del programa...");
+	}
+
+	/**
+	 * Muestra el menú de opciones para el administrador.
+	 */
+	public void mostrarMenuAdministrador() {
 		String opcion = null;
 
 		do {
-			System.out.println("\nMenú principal:\n" + "1. Iniciar sesión\n" + "2. Registrarse\n" + "3. Salir de la aplicación");
+			System.out.println("\n[ADMINISTRADOR]\n" + "1. Crear cuenta bancaria\n" + "2. Borrar cuenta bancaria\n"
+					+ "3. Volver a la pantalla anterior");
 			opcion = introducirInput("Elija una opción:\n> ");
 
-			if (!opcion.equals("1") && !opcion.equals("2") && !opcion.equals("3")) {
-				System.out.println("ERROR: debe introducir una opción del 1 al 3.");
-			}
-		} while (!opcion.equals("1") && !opcion.equals("2") && !opcion.equals("3"));
+			switch (opcion) {
+			case "1":
+				String nombreDuenyo = introducirInput(
+						"Introduzca el nombre y primer apellido del dueño de la cuenta bancaria que deseas crear:\n> ");
+				boolean clienteEncontrado = false;
 
-		switch (opcion) {
-		case "1":
-			solicitarDatosInicioSesion();
-			break;
-		case "2":
-			solicitarDatosRegistro();
-			break;
-		case "3":
-			System.out.println("Saliendo de la aplicación...");
-			System.exit(0);
-		}
+				for (Usuario cliente : usuarios) {
+					if (cliente.getNombre().equals(nombreDuenyo)) {
+						clienteEncontrado = true;
+						String input = introducirInput(
+								"Introduzca el tipo de cuenta (AHORRO, CORRIENTE, INVERSION):\n> ").toUpperCase();
+						try {
+							TipoCuentaBancaria tipoCuenta = TipoCuentaBancaria.valueOf(input);
+							Cuenta cuenta = gc.crearCuenta(cliente.getNombre(), tipoCuenta);
+							cuentas.add(cuenta);
+							cliente.anyadirCuenta(cuenta);
+							System.out.println("Cuenta creada con éxito.");
+						} catch (IllegalArgumentException e) {
+							System.out.println("Tipo de cuenta inválido.");
+						}
+						break;
+					}
+				}
+
+				if (!clienteEncontrado) {
+					System.out.println("Cliente no encontrado.");
+				}
+
+				break;
+			case "2":
+				String nombreDuenyoEliminar = introducirInput(
+						"Introduzca el nombre y primer apellido del dueño de la cuenta que deseas eliminar:\n> ");
+				boolean clienteEncontradoEliminar = false;
+
+				for (Usuario cliente : usuarios) {
+					if (cliente.getNombre().equals(nombreDuenyoEliminar)) {
+						clienteEncontradoEliminar = true;
+						for (Cuenta cuenta : cuentas) {
+							if (cuenta.getNombreDuenyo().equals(cliente.getNombre())) {
+								System.out.println(cuenta);
+							}
+						}
+
+						String numeroCuenta = introducirInput(
+								"Introduzca el número de la cuenta que desea eliminar:\n> ");
+						for (Cuenta cuenta : cuentas) {
+						    if (cuenta.getNumeroCuenta().equals(numeroCuenta)) {
+						        if (!gc.eliminarCuenta(cuenta, cuentas)) {
+						            System.out.println("No se ha podido eliminar la cuenta.");
+						            break;
+						        }
+						        cliente.eliminarCuenta(cuenta);
+						        System.out.println("Cuenta eliminada con éxito.");
+						        break;
+						    }
+						}
+						
+						System.out.println("Número de cuenta inválido.");
+						break;
+					}
+				}
+
+				if (!clienteEncontradoEliminar) {
+					System.out.println("Cliente no encontrado.");
+				}
+
+				break;
+			}
+		} while (!opcion.equals("3"));
 	}
 
+	/**
+	 * Muestra el menú de opciones para el cliente.
+	 */
+	public void mostrarMenuCliente() {
+		String opcion = null;
+		do {
+			do {
+				System.out.println("\n[CLIENTE]\n" + "1. Realizar transferencia\n" + "2. Depositar dinero\n"
+						+ "3. Retirar dinero\n" + "4. Volver a la pantalla anterior");
+				opcion = introducirInput("Elija una opción:\n> ");
+			} while (!opcion.equals("1") && !opcion.equals("2") && !opcion.equals("3") && !opcion.equals("4"));
+
+			switch (opcion) {
+			case "1":
+				// realizarTransferencia();
+				break;
+			case "2":
+				// depositarDinero();
+				break;
+			case "3":
+				// retirarDinero();
+				break;
+			}
+		} while (!opcion.equals("4"));
+	}
+
+	/**
+	 * Solicita al usuario los datos necesarios para iniciar sesión.
+	 */
 	public void solicitarDatosInicioSesion() {
 		String correoElectronico = introducirInput("Introduzca su correo electrónico:\n> ");
-
 		String contrasenya = introducirInput("Introduzca su contraseña:\n> ");
 
 		if (sau.autenticarUsuario(correoElectronico, contrasenya, usuarios)) {
-			String opcion = null;
 			for (Usuario usuario : usuarios) {
 				if (usuario.getCorreoElectronico().equals(correoElectronico)) {
 					if (usuario.getTipoCuentaUsuario().equalsIgnoreCase("A")) {
-						do {
-						System.out.println("\n[ADMINISTRADOR]\n" + "1. Crear cuenta bancaria\n"
-								+ "2. Borrar cuenta bancaria\n" + "3. Volver a la pantalla anterior");
-						opcion = introducirInput("Elija una opción:\n> ");
-						} while (!opcion.equals("1") && !opcion.equals("2") && !opcion.equals("3"));
-						
-						switch (opcion) {
-						case "1":
-//							crearCuentaBancaria();
-							break;
-						case "2":
-//							borrarCuentaBancaria();
-							break;
-						case "3":
-							inicioSesionRegistro();
-							break;
-						}
+						mostrarMenuAdministrador();
 					} else {
-						do {
-							System.out.println("\n[CLIENTE]\n" + "1. Realizar transferencia\n"
-									+ "2. Depositar dinero\n" + "3. Retirar dinero\n" + "4. Volver a la pantalla anterior");
-							opcion = introducirInput("Elija una opción:\n> ");
-							} while (!opcion.equals("1") && !opcion.equals("2") && !opcion.equals("3") && !opcion.equals("4"));
-						
-						switch (opcion) {
-						case "1":
-//							realizarTransferencia();
-							break;
-						case "2":
-//							depositarDinero();
-							break;
-						case "3":
-//							retirarDinero();
-							break;
-						case "4":
-							inicioSesionRegistro();
-							break;	
-						}
+						mostrarMenuCliente();
 					}
 				}
 			}
-		} else {
-			inicioSesionRegistro();
 		}
 	}
 
+	/**
+	 * Solicita al usuario los datos necesarios para registrarse.
+	 */
 	private void solicitarDatosRegistro() {
 		String nombre = introducirInput("Introduzca su nombre y primer apellido:\n> ");
 		String direccion = introducirInput("Introduzca su dirección:\n> ");
@@ -132,11 +220,14 @@ public class InterfazUsuario {
 
 		Usuario usuario = new Usuario(nombre, direccion, telefono, correoElectronico, contrasenya, tipoUsuario);
 		usuarios.add(usuario);
-
-		System.out.println();
-		inicioSesionRegistro();
 	}
 
+	/**
+	 * Valida el formato del teléfono introducido.
+	 *
+	 * @param telefono El teléfono introducido por el usuario.
+	 * @return El teléfono validado.
+	 */
 	private String validarFormatoTelefono(String telefono) {
 		while (!telefono.matches("^(\\+34|0034|34)?[6789]\\d{8}$")) {
 			System.out.println("El formato del teléfono es incorrecto. Debe contener 9 números enteros del 0 al 9.");
@@ -145,6 +236,12 @@ public class InterfazUsuario {
 		return telefono;
 	}
 
+	/**
+	 * Valida el formato de la contraseña introducida.
+	 *
+	 * @param contrasenya La contraseña introducida por el usuario.
+	 * @return La contraseña validada.
+	 */
 	private String validarFormatoContrasenya(String contrasenya) {
 		while (!contrasenya.matches("^(?=.*[0-9]).{8,12}$")) {
 			System.out.println(
@@ -154,6 +251,12 @@ public class InterfazUsuario {
 		return contrasenya;
 	}
 
+	/**
+	 * Valida el formato del correo electrónico introducido.
+	 *
+	 * @param correoElectronico El correo electrónico introducido por el usuario.
+	 * @return El correo electrónico validado.
+	 */
 	private String validarFormatoCorreoElectronico(String correoElectronico) {
 		while (!correoElectronico.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")) {
 			System.out.println(
@@ -164,10 +267,12 @@ public class InterfazUsuario {
 		return correoElectronico;
 	}
 
-	public void solicitarDatosCuenta() {
-		
-	}
-
+	/**
+	 * Lee y devuelve la entrada del usuario desde la consola.
+	 *
+	 * @param mensaje El mensaje a mostrar al usuario.
+	 * @return La entrada del usuario.
+	 */
 	private String introducirInput(String mensaje) {
 		try {
 			System.out.print(mensaje);
