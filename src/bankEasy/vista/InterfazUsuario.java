@@ -23,6 +23,7 @@ public class InterfazUsuario {
 	 * Método principal que inicia el proceso de la interfaz de usuario.
 	 */
 	public void start() {
+		System.out.println("¡Bienvenido a BankEasy!");
 		inicioSesionRegistro();
 	}
 
@@ -52,7 +53,7 @@ public class InterfazUsuario {
 				break;
 			}
 		} while (!opcion.equals("3"));
-		
+
 		System.out.println("\nSaliendo del programa...");
 	}
 
@@ -61,6 +62,7 @@ public class InterfazUsuario {
 	 */
 	public void mostrarMenuAdministrador() {
 		String opcion = null;
+		String nombreDuenyo = null;
 
 		do {
 			System.out.println("\n[ADMINISTRADOR]\n" + "1. Crear cuenta bancaria\n" + "2. Borrar cuenta bancaria\n"
@@ -69,7 +71,7 @@ public class InterfazUsuario {
 
 			switch (opcion) {
 			case "1":
-				String nombreDuenyo = introducirInput(
+				nombreDuenyo = introducirInput(
 						"Introduzca el nombre y primer apellido del dueño de la cuenta bancaria que deseas crear:\n> ");
 				boolean clienteEncontrado = false;
 
@@ -85,24 +87,24 @@ public class InterfazUsuario {
 							cliente.anyadirCuenta(cuenta);
 							System.out.println("Cuenta creada con éxito.");
 						} catch (IllegalArgumentException e) {
-							System.out.println("Tipo de cuenta inválido.");
+							System.out.println("El número de cuenta no se encuentra en la base de datos.");
 						}
 						break;
 					}
 				}
 
 				if (!clienteEncontrado) {
-					System.out.println("Cliente no encontrado.");
+					System.out.println("El cliente no se encuentra en la base de datos.");
 				}
 
 				break;
 			case "2":
-				String nombreDuenyoEliminar = introducirInput(
+				nombreDuenyo = introducirInput(
 						"Introduzca el nombre y primer apellido del dueño de la cuenta que deseas eliminar:\n> ");
 				boolean clienteEncontradoEliminar = false;
 
 				for (Usuario cliente : usuarios) {
-					if (cliente.getNombre().equals(nombreDuenyoEliminar)) {
+					if (cliente.getNombre().equals(nombreDuenyo)) {
 						clienteEncontradoEliminar = true;
 						for (Cuenta cuenta : cuentas) {
 							if (cuenta.getNombreDuenyo().equals(cliente.getNombre())) {
@@ -113,24 +115,24 @@ public class InterfazUsuario {
 						String numeroCuenta = introducirInput(
 								"Introduzca el número de la cuenta que desea eliminar:\n> ");
 						for (Cuenta cuenta : cuentas) {
-						    if (cuenta.getNumeroCuenta().equals(numeroCuenta)) {
-						        if (!gc.eliminarCuenta(cuenta, cuentas)) {
-						            System.out.println("No se ha podido eliminar la cuenta.");
-						            break;
-						        }
-						        cliente.eliminarCuenta(cuenta);
-						        System.out.println("Cuenta eliminada con éxito.");
-						        break;
-						    }
+							if (cuenta.getNumeroCuenta().equals(numeroCuenta)) {
+								if (!gc.eliminarCuenta(cuenta, cuentas)) {
+									System.out.println("No se ha podido eliminar la cuenta.");
+									break;
+								}
+								cliente.eliminarCuenta(cuenta);
+								System.out.println("Cuenta eliminada con éxito.");
+								break;
+							}
 						}
-						
-						System.out.println("Número de cuenta inválido.");
+
+						System.out.println("El número de cuenta no se encuentra en la base de datos.");
 						break;
 					}
 				}
 
 				if (!clienteEncontradoEliminar) {
-					System.out.println("Cliente no encontrado.");
+					System.out.println("El cliente no se encuentra en la base de datos.");
 				}
 
 				break;
@@ -140,9 +142,14 @@ public class InterfazUsuario {
 
 	/**
 	 * Muestra el menú de opciones para el cliente.
+	 * 
+	 * @param usuario
+	 * @param usuario
 	 */
-	public void mostrarMenuCliente() {
+	public void mostrarMenuCliente(Usuario usuario) {
 		String opcion = null;
+		String numeroCuenta = null;
+
 		do {
 			do {
 				System.out.println("\n[CLIENTE]\n" + "1. Realizar transferencia\n" + "2. Depositar dinero\n"
@@ -152,13 +159,60 @@ public class InterfazUsuario {
 
 			switch (opcion) {
 			case "1":
-				// realizarTransferencia();
+				// Transferencia de dinero
+				System.out.println("No implementado aún.");
 				break;
 			case "2":
-				// depositarDinero();
+				usuario.administraCuenta(); // Muestra las cuentas a nombre del usuario
+				numeroCuenta = introducirInput(
+						"Introduzca el número de la cuenta en la que quiera depositar dinero:\n> ");
+				boolean cuentaEncontrada = false;
+				
+				for (Cuenta cuenta : cuentas) {
+					if (cuenta.getNumeroCuenta().equals(numeroCuenta)) {
+						cuentaEncontrada = true;
+						try {
+							double monto = Double.parseDouble(introducirInput("Introduzca el monto a ingresar:\n> "));
+							cuenta.depositarDinero(monto);
+						} catch (NumberFormatException e) {
+							System.out.println(
+									"El monto ingresado no es válido. Por favor, introduzca un número (si es decimal debe llevar el siguiente formato: 56.1).");
+						}
+
+						break;
+					}
+				}
+				
+				if (!cuentaEncontrada) {
+					System.out.println("El número de cuenta no se encuentra en la base de datos.");
+				}
+
 				break;
 			case "3":
-				// retirarDinero();
+				usuario.administraCuenta(); // Muestra las cuentas a nombre del usuario
+				numeroCuenta = introducirInput(
+						"Introduzca el número de la cuenta de la que quiera retirar dinero:\n> ");
+				cuentaEncontrada = false;
+
+				for (Cuenta cuenta : cuentas) {
+					if (cuenta.getNumeroCuenta().equals(numeroCuenta)) {
+						cuentaEncontrada = true;
+						try {
+							double monto = Double.parseDouble(introducirInput("Introduzca el monto a retirar:\n> "));
+							cuenta.retirarDinero(monto);
+						} catch (NumberFormatException e) {
+							System.out.println(
+									"El monto ingresado no es válido. Por favor, introduzca un número (si es decimal debe llevar el siguiente formato: 56.1).");
+						}
+
+						break;
+					}
+				}
+
+				if (!cuentaEncontrada) {
+					System.out.println("El número de cuenta no se encuentra en la base de datos.");
+				}
+
 				break;
 			}
 		} while (!opcion.equals("4"));
@@ -177,7 +231,7 @@ public class InterfazUsuario {
 					if (usuario.getTipoCuentaUsuario().equalsIgnoreCase("A")) {
 						mostrarMenuAdministrador();
 					} else {
-						mostrarMenuCliente();
+						mostrarMenuCliente(usuario);
 					}
 				}
 			}

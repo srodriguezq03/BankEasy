@@ -95,11 +95,6 @@ public class Usuario {
 	    for (Cuenta cuenta : cuentas) {
 	        if (cuenta.getNombreDuenyo().equals(this.getNombre())) {
 	            System.out.println("Saldo Actual de la Cuenta " + cuenta.getNumeroCuenta() + ": " + cuenta.getSaldo());
-	            System.out.println("Movimientos Recientes de la Cuenta " + cuenta.getNumeroCuenta() + ":");
-	            for (Movimiento movimiento : cuenta.getMovimientos()) {
-	                System.out.println(movimiento);
-	            }
-	            
 	            System.out.println("Detalles de la Cuenta " + cuenta.getNumeroCuenta() + ":");
 	            System.out.println(cuenta);
 	        }
