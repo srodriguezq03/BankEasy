@@ -90,12 +90,11 @@ public class Usuario {
 		cuentas.remove(cuenta);
 	}
 		
-	public void administraCuenta() {
-	    System.out.println("Administrar Cuentas:");
+	public void mostrarCuentas() {
+	    System.out.println("Mostrando cuentas de " + this.nombre + ":");
 	    for (Cuenta cuenta : cuentas) {
 	        if (cuenta.getNombreDuenyo().equals(this.getNombre())) {
-	            System.out.println("Saldo Actual de la Cuenta " + cuenta.getNumeroCuenta() + ": " + cuenta.getSaldo());
-	            System.out.println("Detalles de la Cuenta " + cuenta.getNumeroCuenta() + ":");
+	            System.out.println("\nDetalles de la Cuenta " + cuenta.getNumeroCuenta() + ":");
 	            System.out.println(cuenta);
 	        }
 	    }

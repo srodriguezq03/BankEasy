@@ -85,6 +85,10 @@ public class Cuenta {
 	public boolean depositarDinero(double monto) {
 		if (monto > 0) {
 			saldo += monto;
+			
+			Movimiento deposito = new Movimiento(obtenerFechaActual(), "Depósito de dinero", monto, this.numeroCuenta, this.numeroCuenta);
+			movimientos.add(deposito);
+			
 			return true;
 		}
 		
@@ -94,6 +98,10 @@ public class Cuenta {
 	public boolean retirarDinero(double monto) {
 		if (saldo >= monto && monto > 0) {
 			saldo -= monto;
+			
+			Movimiento retirada = new Movimiento(obtenerFechaActual(), "Retirada de dinero", monto, this.numeroCuenta, this.numeroCuenta);
+			movimientos.add(retirada);
+			
 			return true;
 		}
 		
@@ -110,15 +118,13 @@ public class Cuenta {
 	public String toString() {
 		StringBuilder stringBuilder = new StringBuilder();
 
-		stringBuilder.append("Cuenta:\n");
+		stringBuilder.append("Cuenta ").append(tipoCuentaBancaria).append("\n");
 		stringBuilder.append("Nombre del dueño: ").append(nombreDuenyo).append("\n");
-		stringBuilder.append("Número de Cuenta: ").append(numeroCuenta).append("\n");
 		stringBuilder.append("Saldo: ").append(saldo).append("\n");
-		stringBuilder.append("Tipo de Cuenta: ").append(tipoCuentaBancaria).append("\n");
 		stringBuilder.append("Movimientos:\n");
 		for (Movimiento movimiento : movimientos) {
+			stringBuilder.append("-------------------------------").append("\n");
 			stringBuilder.append(movimiento).append("\n");
-			stringBuilder.append("-------------------------------");
 		}
 
 		return stringBuilder.toString();

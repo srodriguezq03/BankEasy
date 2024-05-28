@@ -24,7 +24,7 @@ public class Movimiento {
 		this.origen = origen;
 		this.destino = destino;
 	}
-
+	
 	public String getFecha() {
 		return fecha;
 	}

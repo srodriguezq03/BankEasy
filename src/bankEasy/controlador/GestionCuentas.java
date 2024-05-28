@@ -43,7 +43,7 @@ public class GestionCuentas {
 		if (cuentas.remove(cuenta)) {
 			return true;
 		}
-		
+
 		return false;
 	}
 }
