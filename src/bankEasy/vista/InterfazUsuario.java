@@ -195,7 +195,12 @@ public class InterfazUsuario {
 								}
 							}
 
-							cuentaDestino.depositarDinero(monto);
+							if (!cuentaDestino.depositarDinero(monto)) {
+								System.out.println("Transferencia fallida.");
+								System.out.println(
+										"Asegúrese de tener suficiente dinero en la cuenta para la transferencia y que la cantidad sea mayor que 0.");
+								break;
+							}
 							System.out.println("¡Dinero transferido con éxito!");
 						} catch (NumberFormatException e) {
 							System.out.println(
@@ -229,6 +234,7 @@ public class InterfazUsuario {
 								System.out.println("La cantidad a depositar debe ser mayor que 0.");
 								break;
 							}
+							
 							System.out.println("¡Dinero depositado con éxito!");
 						} catch (NumberFormatException e) {
 							System.out.println(
@@ -262,6 +268,7 @@ public class InterfazUsuario {
 										"Asegúrese de tener suficiente dinero en la cuenta para la retirada y que la cantidad sea mayor que 0.");
 								break;
 							}
+							
 							System.out.println("¡Dinero retirado con éxito!");
 						} catch (NumberFormatException e) {
 							System.out.println(
