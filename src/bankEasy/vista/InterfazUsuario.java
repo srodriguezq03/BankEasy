@@ -80,8 +80,8 @@ public class InterfazUsuario {
 				for (Usuario cliente : usuarios) {
 					if (cliente.getNombre().equals(nombreDuenyo)) {
 						clienteEncontrado = true;
-						String input = introducirInput(
-								"Introduzca el tipo de cuenta (AHORRO, CORRIENTE, INVERSION):\n> ").toUpperCase();
+						String input = introducirInput("Introduzca el tipo de cuenta (AHORRO o CORRIENTE):\n> ")
+								.toUpperCase();
 						try {
 							TipoCuentaBancaria tipoCuenta = TipoCuentaBancaria.valueOf(input);
 							Cuenta cuenta = gc.crearCuenta(cliente.getNombre(), tipoCuenta);
@@ -151,18 +151,66 @@ public class InterfazUsuario {
 	public void mostrarMenuCliente(Usuario usuario) {
 		String opcion = null;
 		String numeroCuenta = null;
+		String nombreDestino = null;
 
 		do {
 			do {
 				System.out.println("\n[CLIENTE]\n" + "1. Realizar transferencia\n" + "2. Depositar dinero\n"
-						+ "3. Retirar dinero\n" + "5. Mostrar cuentas bancarias\n" + "4. Volver a la pantalla anterior");
+						+ "3. Retirar dinero\n" + "5. Mostrar cuentas bancarias\n"
+						+ "4. Volver a la pantalla anterior");
 				opcion = introducirInput("Elija una opción:\n> ");
 			} while (!opcion.equals("1") && !opcion.equals("2") && !opcion.equals("3") && !opcion.equals("4"));
 
 			switch (opcion) {
 			case "1":
-				// Transferencia de dinero
-				System.out.println("No implementado aún.");
+				nombreDestino = introducirInput(
+						"Introduzca el nombre y primer apellido del dueño de la cuenta bancaria a la que deseas hacer una transferencia:\n> ");
+				boolean destinoEncontrado = false;
+
+				for (Cuenta cuentaDestino : cuentas) {
+					if (cuentaDestino.getNombreDuenyo().equals(nombreDestino)
+							&& cuentaDestino.getTipoCuentaBancaria() == TipoCuentaBancaria.CORRIENTE) {
+						destinoEncontrado = true;
+
+						try {
+							double monto = Double.parseDouble(introducirInput("Introduzca el monto a transferir:\n> "));
+
+							boolean origenEncontrado = false;
+							for (Cuenta cuentaOrigen : cuentas) {
+								if (cuentaOrigen.getNombreDuenyo().equals(usuario.getNombre())
+										&& cuentaOrigen.getTipoCuentaBancaria() == TipoCuentaBancaria.CORRIENTE) {
+									origenEncontrado = true;
+
+									if (!cuentaOrigen.realizarTransferencia(nombreDestino, monto)) {
+										System.out.println("Transferencia fallida.");
+										System.out.println(
+												"Asegúrese de tener suficiente dinero en la cuenta para la transferencia y que la cantidad sea mayor que 0.");
+										break;
+									}
+								}
+
+								if (!origenEncontrado) {
+									System.out.println("Usted no posee una cuenta corriente.");
+									break;
+								}
+							}
+
+							cuentaDestino.depositarDinero(monto);
+							System.out.println("¡Dinero transferido con éxito!");
+						} catch (NumberFormatException e) {
+							System.out.println(
+									"El monto introducido no es válido. Por favor, introduzca un número (si es decimal debe llevar el siguiente formato: 56.1).");
+						}
+
+						break;
+					}
+				}
+
+				if (!destinoEncontrado) {
+					System.out.println(
+							"El dueño de la cuenta no se encuentra en la base de datos o no posee una cuenta corriente.");
+				}
+
 				break;
 			case "2":
 				usuario.mostrarCuentas(); // Muestra las cuentas a nombre del usuario
@@ -173,13 +221,18 @@ public class InterfazUsuario {
 				for (Cuenta cuenta : cuentas) {
 					if (cuenta.getNumeroCuenta().equals(numeroCuenta)) {
 						cuentaEncontrada = true;
+
 						try {
 							double monto = Double.parseDouble(introducirInput("Introduzca el monto a ingresar:\n> "));
-							cuenta.depositarDinero(monto);
+							if (!cuenta.depositarDinero(monto)) {
+								System.out.println("Depósito fallido.");
+								System.out.println("La cantidad a depositar debe ser mayor que 0.");
+								break;
+							}
 							System.out.println("¡Dinero depositado con éxito!");
 						} catch (NumberFormatException e) {
 							System.out.println(
-									"El monto ingresado no es válido. Por favor, introduzca un número (si es decimal debe llevar el siguiente formato: 56.1).");
+									"El monto introducido no es válido. Por favor, introduzca un número (si es decimal debe llevar el siguiente formato: 56.1).");
 						}
 
 						break;
@@ -200,13 +253,19 @@ public class InterfazUsuario {
 				for (Cuenta cuenta : cuentas) {
 					if (cuenta.getNumeroCuenta().equals(numeroCuenta)) {
 						cuentaEncontrada = true;
+
 						try {
 							double monto = Double.parseDouble(introducirInput("Introduzca el monto a retirar:\n> "));
-							cuenta.retirarDinero(monto);
+							if (!cuenta.retirarDinero(monto)) {
+								System.out.println("Retirada fallida.");
+								System.out.println(
+										"Asegúrese de tener suficiente dinero en la cuenta para la retirada y que la cantidad sea mayor que 0.");
+								break;
+							}
 							System.out.println("¡Dinero retirado con éxito!");
 						} catch (NumberFormatException e) {
 							System.out.println(
-									"El monto ingresado no es válido. Por favor, introduzca un número (si es decimal debe llevar el siguiente formato: 56.1).");
+									"El monto introducido no es válido. Por favor, introduzca un número (si es decimal debe llevar el siguiente formato: 56.1).");
 						}
 
 						break;
