@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import bankEasy.modelo.Usuario;
 
 public class SistemaAutenticacionUsuario {
+	
+	ArrayList<Usuario> usuarios = new ArrayList<>();
+	
+	public ArrayList<Usuario> getUsuarios() {
+		return usuarios;
+	}
 
 	/**
 	 * Autentica a un usuario basado en su correo electrónico y contraseña.

@@ -7,6 +7,12 @@ import bankEasy.modelo.Cuenta;
 import bankEasy.modelo.TipoCuentaBancaria;
 
 public class GestionCuentas {
+	
+	ArrayList<Cuenta> cuentas = new ArrayList<>();
+
+	public ArrayList<Cuenta> getCuentas() {
+		return cuentas;
+	}
 
 	/**
 	 * Crea una nueva cuenta bancaria con un número de cuenta generado
