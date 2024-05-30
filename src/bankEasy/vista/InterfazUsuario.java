@@ -27,10 +27,10 @@ public class InterfazUsuario {
 	public void start() {
 		System.out.println("¡Bienvenido a BankEasy!");
 		usuarios.add(
-				new Usuario("Santiago Rodríguez", "C/ Entreplazas", "695070407", "santi@gmail.com", "1830abc42", "C"));
+				new Usuario("Santiago Rodríguez", "C/ Entreplazas", "67456234", "santi@gmail.com", "1432cbd34", "C"));
 		usuarios.add(new Usuario("Pedro Gaspar Rodríguez", "C/ Entreplazas", "6902434264", "pedro@gmail.com",
-				"1830abc42", "C"));
-		usuarios.add(new Usuario("Admin", "Oficina", "666777888", "admin@gmail.com", "1830abc42", "A"));
+				"1432cbd34", "C"));
+		usuarios.add(new Usuario("Admin", "Oficina", "666777888", "admin@gmail.com", "1432cbd34", "A"));
 		inicioSesionRegistro();
 	}
 
