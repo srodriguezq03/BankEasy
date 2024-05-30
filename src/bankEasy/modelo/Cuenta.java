@@ -67,7 +67,21 @@ public class Cuenta {
 	public void setMovimientos(ArrayList<Movimiento> movimientos) {
 		this.movimientos = movimientos;
 	}
+	
+	public boolean recibirTransferencia(String origen, double monto) {
+		if (monto > 0) {
+			saldo += monto;
 
+			Movimiento transferencia = new Movimiento(obtenerFechaActual(), "Transferencia realizada a " + origen,
+					monto, this.numeroCuenta, origen);
+			movimientos.add(transferencia);
+
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public boolean realizarTransferencia(String destino, double monto) {
 		if (saldo >= monto && monto > 0) {
 			saldo -= monto;
