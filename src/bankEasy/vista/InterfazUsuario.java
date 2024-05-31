@@ -18,7 +18,7 @@ public class InterfazUsuario {
 	GestionCuentas gc = new GestionCuentas();
 	ValidarPatrones vp = new ValidarPatrones();
 
-	// Códigos de escape ANSI para controlar los colores que se muestran por consola
+	// Códigos de escape ANSI para controlar los colores que se muestran por consola.
 	public static final String ANSI_RESET = "\u001B[0m";
 	public static final String ANSI_WHITE = "\u001B[37m";
 	public static final String ANSI_BRIGHT_GREEN = "\u001B[92m";
@@ -193,7 +193,7 @@ public class InterfazUsuario {
 
 				if (!destinoEncontrado) {
 					System.out.println(ANSI_BRIGHT_YELLOW
-							+ "El dueño de la cuenta no se encuentra en la base de datos o no posee una cuenta corriente."
+							+ "El número de cuenta introducido no se encuentra en la base de datos o no pertenece a una cuenta corriente."
 							+ ANSI_RESET);
 					break;
 				}
